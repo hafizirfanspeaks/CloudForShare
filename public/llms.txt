@@ -1,0 +1,97 @@
+# CloudForShare — by Irfanz Solutions
+
+> CloudForShare is a free, fast, and secure file-sharing platform. Upload files, share text, or paste code — get a live link instantly. No signup required. Real-time sync, password protection, QR codes, and more.
+
+## Company
+
+- **Company:** Irfanz Solutions
+- **Tagline:** Building modern software that scales.
+- **Email:** irfanzsolutions@gmail.com
+- **Services:** Web app development, mobile apps, SaaS platforms, custom software, UI/UX design, API development, database design, cloud deployment.
+- **Contact for:** Custom software projects, sponsorship inquiries, business partnerships.
+- **Location:** Pakistan
+- **Serving:** Worldwide
+
+## Product
+
+- **Product Name:** CloudForShare
+- **Product Type:** File sharing / Live board / Pastebin alternative
+- **Pricing:** Free forever
+- **Account Required:** No (optional for advanced features)
+- **Max File Size:** 50 MB per file
+- **Max Files Per Upload:** 10
+- **Storage:** Supabase (secure cloud storage)
+- **URL:** https://cloudforshare.com
+
+## Core Features
+
+1. **Instant Upload** — Drag & drop files, get a share link in seconds
+2. **No Signup Required** — Start sharing immediately
+3. **Live Board** — Real-time text collaboration
+4. **Text & Code Sharing** — Paste code with syntax support
+5. **Password Protection** — Add password to any board
+6. **Expiry Control** — 1 hour, 24 hours, 7 days, 30 days, or never
+7. **Download Limits** — Limit how many times a file can be downloaded
+8. **QR Code Sharing** — Scan to download on any device
+9. **Custom Links** — Create memorable URLs like /b/my-class
+10. **PWA Installable** — Install as mobile app
+11. **Dark Mode** — Automatic and manual toggle
+12. **Real-time Sync** — Changes appear instantly on all devices
+13. **Clipboard Paste** — Press Ctrl+V to upload images
+14. **ZIP Download** — Download all files at once
+15. **Search & Filter** — Find files by name or type
+
+## How to Use CloudForShare
+
+1. Visit https://cloudforshare.com
+2. Type text, paste code, or drag & drop files
+3. Set password, expiry, or custom link (optional)
+4. Share the link — anyone can view instantly
+5. Everyone sees the same content in real-time
+
+## Technology Stack
+
+- **Frontend:** React 19, TypeScript, Tailwind CSS v4, Vite
+- **Backend:** Supabase (PostgreSQL, Storage, Auth, Realtime)
+- **SEO:** React Helmet Async, Schema.org structured data
+- **Hosting:** Vercel
+
+## Services by Irfanz Solutions
+
+We build custom software for startups and enterprises:
+
+1. Web Application Development (React, Next.js, Node.js)
+2. Mobile App Development (React Native, Flutter)
+3. SaaS Platform Development
+4. Custom Software Solutions
+5. UI/UX Design
+6. API Development & Integration
+7. Database Design & Optimization
+8. Cloud Deployment & DevOps
+
+## Contact Irfanz Solutions
+
+- **Email:** irfanzsolutions@gmail.com
+- **For:** Custom software, sponsorship, partnerships, hiring
+- **Response Time:** Within 24 hours
+
+## Frequently Asked Questions
+
+### What is CloudForShare?
+CloudForShare is a free file-sharing platform built by Irfanz Solutions. Upload files, share text, or paste code — get a shareable link instantly.
+
+### Who builds CloudForShare?
+CloudForShare is built and maintained by Irfanz Solutions — a software development company based in Pakistan serving clients worldwide.
+
+### How can I contact Irfanz Solutions?
+Email us at irfanzsolutions@gmail.com for custom software projects, sponsorship, or business inquiries.
+
+### Is CloudForShare really free?
+Yes, completely free. No credit card, no signup, no hidden fees.
+
+### What services does Irfanz Solutions offer?
+Irfanz Solutions offers web app development, mobile apps, SaaS platforms, UI/UX design, API development, and cloud deployment.
+
+## License
+
+© 2026 CloudForShare by Irfanz Solutions. All rights reserved.
