@@ -12,6 +12,10 @@ import {
   EyeOff,
   CheckCircle2,
   Loader2,
+  Sparkles,
+  Link as LinkIcon,
+  QrCode,
+  Shield,
 } from 'lucide-react'
 import SEO from '@/components/seo/SEO'
 import Button from '@/components/common/Button'
@@ -146,13 +150,13 @@ export default function Share() {
         <SEO title="Share Not Available" noindex />
         <div className="container-custom py-16">
           <div className="max-w-md mx-auto text-center">
-            <div className="size-16 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-5">
+            <div className="size-16 rounded-2xl bg-red-50 dark:bg-red-950/40 flex items-center justify-center mx-auto mb-5">
               <AlertCircle className="size-8 text-red-500" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Share Not Available
             </h1>
-            <p className="text-gray-600 mb-6">{errorMsg}</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">{errorMsg}</p>
             <Link to="/upload">
               <Button leftIcon={<ArrowLeft className="size-4" />}>
                 Share Your Own Content
@@ -171,15 +175,18 @@ export default function Share() {
         <SEO title="Password Required" noindex />
         <div className="container-custom py-16">
           <div className="max-w-md mx-auto">
-            <Card padding="lg" className="border border-gray-200">
+            <Card
+              padding="lg"
+              className="border border-gray-200 dark:border-gray-800 shadow-lg"
+            >
               <div className="text-center mb-6">
-                <div className="size-14 rounded-2xl bg-brand-50 flex items-center justify-center mx-auto mb-4">
-                  <Lock className="size-7 text-brand-600" />
+                <div className="size-14 rounded-2xl bg-brand-50 dark:bg-brand-950/50 flex items-center justify-center mx-auto mb-4">
+                  <Lock className="size-7 text-brand-600 dark:text-brand-400" />
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   Password Protected
                 </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Enter the password to access this content.
                 </p>
               </div>
@@ -197,7 +204,8 @@ export default function Share() {
                     <button
                       type="button"
                       onClick={() => setShowPassword((v) => !v)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
+                      tabIndex={-1}
                     >
                       {showPassword ? (
                         <EyeOff className="size-4" />
@@ -271,66 +279,150 @@ export default function Share() {
         <div className="max-w-4xl mx-auto">
           <Link
             to="/upload"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-6"
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 cursor-pointer"
           >
             <ArrowLeft className="size-4" />
             Share your own content
           </Link>
 
-          <Card padding="lg" className="border border-gray-200">
+          <Card
+            padding="lg"
+            className="border border-gray-200 dark:border-gray-800 shadow-lg"
+          >
             {/* Header */}
             <div className="text-center mb-6">
-              <div className="size-14 rounded-2xl bg-brand-50 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="size-7 text-brand-600" />
+              <div className="size-14 rounded-2xl bg-linear-to-br from-brand-100 to-purple-100 dark:from-brand-950/50 dark:to-purple-950/50 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="size-7 text-brand-600 dark:text-brand-400" />
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 {headerTitle}
               </h1>
-              <p className="text-sm text-gray-500">{headerSubtitle}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {headerSubtitle}
+              </p>
             </div>
 
-            {/* Share link + QR (collapsible) */}
-            <details className="mb-6">
-              <summary className="cursor-pointer list-none text-xs font-medium text-gray-500 hover:text-gray-700 inline-flex items-center gap-1.5 select-none">
-                <Lock className="size-3.5" />
-                Show share link & QR code
-              </summary>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 items-center">
-                <div>
-                  <input
-                    type="text"
-                    readOnly
-                    value={shareUrl}
-                    onClick={(e) => (e.target as HTMLInputElement).select()}
-                    className="w-full h-11 px-3 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700 font-mono focus:outline-none focus:border-brand-500"
-                  />
-                  <div className="mt-3">
-                    <CopyButton value={shareUrl} label="Copy Link" fullWidth />
+            {/* ═══════════════════════════════════════════════
+                SHARE SECTION — Always Visible
+            ═══════════════════════════════════════════════ */}
+            <div className="mb-6 space-y-4">
+              {/* Unique Name Message */}
+              <div className="relative p-4 md:p-5 rounded-2xl bg-linear-to-br from-purple-500 via-pink-500 to-orange-500 text-white overflow-hidden shadow-lg">
+                <div className="absolute -top-10 -right-10 size-32 rounded-full bg-white/20 blur-2xl" />
+                <div className="absolute -bottom-10 -left-10 size-32 rounded-full bg-white/20 blur-2xl" />
+
+                <div className="relative flex items-start gap-3">
+                  <div className="size-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0">
+                    <Sparkles className="size-5 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm md:text-base font-bold mb-1">
+                      ✨ Your private share link is ready!
+                    </p>
+                    <p className="text-xs md:text-sm text-white/90 leading-relaxed">
+                      Share this link with{' '}
+                      <strong>only the people you trust</strong>. It's private,
+                      secure, and expires automatically — no one else can find
+                      it.
+                    </p>
                   </div>
                 </div>
-                <div className="flex justify-center md:justify-end">
-                  <QRCodeDisplay value={shareUrl} size={160} />
+              </div>
+
+              {/* Link + QR Card */}
+              <div className="rounded-2xl bg-white dark:bg-gray-900 border-2 border-brand-200 dark:border-brand-900 shadow-lg overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-2">
+                  {/* Left — Link */}
+                  <div className="p-5 md:p-6 border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="size-8 rounded-lg bg-brand-50 dark:bg-brand-950/50 flex items-center justify-center">
+                        <LinkIcon className="size-4 text-brand-600 dark:text-brand-400" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
+                          Share Link
+                        </p>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                          Copy & send to anyone
+                        </p>
+                      </div>
+                    </div>
+
+                    <input
+                      type="text"
+                      readOnly
+                      value={shareUrl}
+                      onClick={(e) => (e.target as HTMLInputElement).select()}
+                      className="w-full h-11 px-3 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-sm text-gray-700 dark:text-gray-300 font-mono focus:outline-none focus:border-brand-500 cursor-pointer mb-3"
+                    />
+
+                    <CopyButton value={shareUrl} label="Copy Link" fullWidth />
+
+                    <div className="flex items-center gap-1.5 mt-3 text-[11px] text-gray-500 dark:text-gray-400">
+                      <Lock className="size-3" />
+                      <span>Anyone with the link can view this content</span>
+                    </div>
+                  </div>
+
+                  {/* Right — QR */}
+                  <div className="p-5 md:p-6 flex flex-col items-center justify-center bg-linear-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="size-8 rounded-lg bg-purple-50 dark:bg-purple-950/50 flex items-center justify-center">
+                        <QrCode className="size-4 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
+                          Scan QR Code
+                        </p>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                          Open on any device
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-white rounded-2xl shadow-md">
+                      <QRCodeDisplay value={shareUrl} size={160} />
+                    </div>
+
+                    <p className="mt-3 text-[11px] text-gray-500 dark:text-gray-400 text-center">
+                      📱 Open camera & scan to view instantly
+                    </p>
+                  </div>
                 </div>
               </div>
-            </details>
+
+              {/* Privacy Tip */}
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-100 dark:border-green-900">
+                <div className="size-5 rounded-full bg-green-500 flex items-center justify-center shrink-0 mt-0.5">
+                  <Shield className="size-3 text-white" />
+                </div>
+                <div className="text-xs text-green-800 dark:text-green-300 leading-relaxed">
+                  <strong>100% Private:</strong> Your content is only visible
+                  to people who have this exact link. Not indexed by search
+                  engines.
+                  {share.password_hash &&
+                    ' Password required for extra security.'}
+                </div>
+              </div>
+            </div>
 
             {/* Info badges */}
-            <div className="flex flex-wrap items-center gap-2 py-4 border-y border-gray-100 mb-6">
+            <div className="flex flex-wrap items-center gap-2 py-4 border-y border-gray-100 dark:border-gray-800 mb-6">
               {share.expires_at && !expired && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 text-xs font-medium text-gray-600">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-300">
                   <Clock className="size-3.5" />
                   Expires {formatDateTime(share.expires_at)}
                 </span>
               )}
               {!share.expires_at && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 text-xs font-medium text-gray-600">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-300">
                   <Clock className="size-3.5" />
                   Never expires
                 </span>
               )}
 
               {isFileShare && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 text-xs font-medium text-gray-600">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-300">
                   <Download className="size-3.5" />
                   {share.download_limit === 0
                     ? 'Unlimited downloads'
@@ -339,14 +431,16 @@ export default function Share() {
               )}
 
               {isTextShare && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 text-xs font-medium text-gray-600">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-300">
                   <FileCode2 className="size-3.5" />
-                  {share.content_type === 'code' ? 'Code snippet' : 'Text snippet'}
+                  {share.content_type === 'code'
+                    ? 'Code snippet'
+                    : 'Text snippet'}
                 </span>
               )}
 
               {share.password_hash && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 text-xs font-medium text-gray-600">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-300">
                   <Lock className="size-3.5" />
                   Password protected
                 </span>
@@ -357,7 +451,7 @@ export default function Share() {
             {isTextShare && share.content && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-gray-900">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                     {share.content_type === 'code' ? 'Code' : 'Text'}
                   </h3>
                   <CopyButton
@@ -368,10 +462,10 @@ export default function Share() {
                     size="sm"
                   />
                 </div>
-                <div className="rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
+                <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 overflow-hidden">
                   <pre
                     className={cn(
-                      'p-4 text-sm overflow-x-auto whitespace-pre-wrap wrap-break-word max-h-[70vh] overflow-y-auto',
+                      'p-4 text-sm text-gray-900 dark:text-gray-100 overflow-x-auto whitespace-pre-wrap wrap-break-word max-h-[70vh] overflow-y-auto',
                       share.content_type === 'code' && 'font-mono'
                     )}
                   >
@@ -454,7 +548,7 @@ export default function Share() {
             {isFileShare && !singleImage && !singlePdf && !singleText && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-gray-900">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                     {fileCount} {fileCount === 1 ? 'file' : 'files'}
                   </h3>
                   {fileCount > 1 && (
@@ -478,19 +572,19 @@ export default function Share() {
                   return (
                     <div
                       key={file.id}
-                      className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                     >
-                      <div className="size-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                      <div className="size-10 rounded-lg bg-brand-50 dark:bg-brand-950/50 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
                         <FileText className="size-5" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p
-                          className="text-sm font-medium text-gray-900 truncate"
+                          className="text-sm font-medium text-gray-900 dark:text-white truncate"
                           title={file.name}
                         >
                           {file.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {formatBytes(file.size)}
                           {getFileExtension(file.name) && (
                             <span className="ml-1.5 uppercase">
@@ -564,7 +658,7 @@ function ImagePreview({ file }: { file: ShareWithFiles['files'][0] }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 bg-gray-50 rounded-xl border border-gray-200">
+      <div className="flex items-center justify-center py-20 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800">
         <Loader2 className="size-6 animate-spin text-brand-500" />
       </div>
     )
@@ -573,7 +667,7 @@ function ImagePreview({ file }: { file: ShareWithFiles['files'][0] }) {
   if (!url) return null
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
+    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 overflow-hidden">
       <img
         src={url}
         alt={file.name}
@@ -611,7 +705,7 @@ function PdfPreview({ file }: { file: ShareWithFiles['files'][0] }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 bg-gray-50 rounded-xl border border-gray-200">
+      <div className="flex items-center justify-center py-20 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800">
         <Loader2 className="size-6 animate-spin text-brand-500" />
       </div>
     )
@@ -620,7 +714,7 @@ function PdfPreview({ file }: { file: ShareWithFiles['files'][0] }) {
   if (!url) return null
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
+    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 overflow-hidden">
       <iframe src={url} title={file.name} className="w-full h-[70vh]" />
     </div>
   )
@@ -652,7 +746,7 @@ function TextFilePreview({ file }: { file: ShareWithFiles['files'][0] }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 bg-gray-50 rounded-xl border border-gray-200">
+      <div className="flex items-center justify-center py-20 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800">
         <Loader2 className="size-6 animate-spin text-brand-500" />
       </div>
     )
@@ -671,8 +765,8 @@ function TextFilePreview({ file }: { file: ShareWithFiles['files'][0] }) {
           size="sm"
         />
       </div>
-      <div className="rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
-        <pre className="p-4 text-sm overflow-x-auto whitespace-pre-wrap wrap-break-word max-h-[70vh] overflow-y-auto font-mono">
+      <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 overflow-hidden">
+        <pre className="p-4 text-sm text-gray-900 dark:text-gray-100 overflow-x-auto whitespace-pre-wrap wrap-break-word max-h-[70vh] overflow-y-auto font-mono">
           {content}
         </pre>
       </div>
