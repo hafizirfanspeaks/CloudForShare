@@ -42,6 +42,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { useBoardView } from '@/hooks/useBoardView'
 import { downloadAllAsZip, filterFileByType } from '@/lib/utils/zipDownload'
 import { downloadElementAsImage } from '@/lib/utils/copyAsImage'
+import { getNetworkSlug } from '@/lib/utils/network'
 
 const TEXT_SAVE_DELAY = 800
 
@@ -113,11 +114,14 @@ export default function Board({ forceNew }: BoardProps = {}) {
       }
 
       if (!slug) {
+        // ✅ Get IP-based network slug for public board
+        const networkSlug = await getNetworkSlug()
+        
         const { board: mainBoard, error: mainError } =
-          await getOrCreateBoard('public')
+          await getOrCreateBoard(networkSlug)
         if (cancelled) return
         if (mainError || !mainBoard) {
-          setError(mainError || 'Failed to load public board')
+          setError(mainError || 'Failed to load network board')
           notify.error('Failed to load board', mainError || undefined)
           setLoading(false)
           return
@@ -140,7 +144,6 @@ export default function Board({ forceNew }: BoardProps = {}) {
         return
       }
 
-      // ✅ Step 4 Fix: Public board kabhi expire nahi hoga
       if (slug !== 'public' && data.expires_at && new Date(data.expires_at) < new Date()) {
         setError('This board has expired')
         notify.error('Board expired', 'This board is no longer available')
@@ -237,7 +240,7 @@ export default function Board({ forceNew }: BoardProps = {}) {
       setUploading(false)
 
       if (successCount > 0 && failCount === 0) {
-        notify.success(`${successCount} file${successCount === 1 ? '' : 's'} uploaded`, 'Everyone on this board can see it now')
+        notify.success(`${successCount} file${successCount === 1 ? '' : 's'} uploaded`, 'Everyone on this network can see it now')
       } else if (failCount > 0 && successCount > 0) {
         notify.warning(`${successCount} uploaded, ${failCount} failed`)
       } else if (failCount > 0) {
@@ -408,7 +411,9 @@ export default function Board({ forceNew }: BoardProps = {}) {
     return <BoardPasswordPrompt board={board} onUnlock={() => setUnlocked(true)} />
   }
 
-  const shareUrl = board.slug === 'public' ? `${window.location.origin}/` : `${window.location.origin}/b/${board.slug}`
+  const shareUrl = board.slug.startsWith('network-') || board.slug === 'public' 
+    ? `${window.location.origin}/` 
+    : `${window.location.origin}/b/${board.slug}`
 
   return (
     <>
@@ -598,7 +603,6 @@ export default function Board({ forceNew }: BoardProps = {}) {
             </div>
           </div>
 
-          {/* ✅ Step 2: Print/PDF Branding (Hidden on screen, visible on print) */}
           <div className="hidden print:block mt-12 pt-8 border-t border-gray-300">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">CloudForShare</h2>

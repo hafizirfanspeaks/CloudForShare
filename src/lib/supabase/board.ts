@@ -80,7 +80,7 @@ export async function createBoard(options?: {
 }
 
 // =====================================================
-// Get or create public board
+// Get or create public/network board
 // =====================================================
 export async function getOrCreateBoard(slug: string): Promise<{
   board: Board | null
@@ -93,9 +93,9 @@ export async function getOrCreateBoard(slug: string): Promise<{
       .eq('slug', slug)
       .maybeSingle()
 
-        if (existing) {
-      // Public board never expires
-      if (slug !== 'public' && existing.expires_at && new Date(existing.expires_at) < new Date()) {
+    if (existing) {
+      // ✅ Network and Public boards never expire (unless manually deleted)
+      if (slug !== 'public' && !slug.startsWith('network-') && existing.expires_at && new Date(existing.expires_at) < new Date()) {
         return { board: null, error: 'This board has expired' }
       }
       return { board: existing, error: null }
@@ -104,13 +104,18 @@ export async function getOrCreateBoard(slug: string): Promise<{
     const { data: authData } = await supabase.auth.getUser()
     const userId = authData.user?.id || null
 
-        const { data, error } = await supabase
+    // Network boards auto-expire in 24 hours to save database space
+    const expiresAt = slug.startsWith('network-') 
+      ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() 
+      : null
+
+    const { data, error } = await supabase
       .from('boards')
       .insert({ 
         slug, 
         text_content: '', 
         user_id: userId,
-        expires_at: slug === 'public' ? null : undefined // Public board never expires
+        expires_at: expiresAt
       })
       .select()
       .single()
@@ -233,7 +238,7 @@ export async function isSlugAvailable(slug: string): Promise<boolean> {
 }
 
 // =====================================================
-// Text/File operations (same as before)
+// Text/File operations
 // =====================================================
 export async function updateBoardText(
   boardId: string,
