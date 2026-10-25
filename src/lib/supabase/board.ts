@@ -93,9 +93,9 @@ export async function getOrCreateBoard(slug: string): Promise<{
       .eq('slug', slug)
       .maybeSingle()
 
-    if (existing) {
-      // Check if expired
-      if (existing.expires_at && new Date(existing.expires_at) < new Date()) {
+        if (existing) {
+      // Public board never expires
+      if (slug !== 'public' && existing.expires_at && new Date(existing.expires_at) < new Date()) {
         return { board: null, error: 'This board has expired' }
       }
       return { board: existing, error: null }
@@ -104,9 +104,14 @@ export async function getOrCreateBoard(slug: string): Promise<{
     const { data: authData } = await supabase.auth.getUser()
     const userId = authData.user?.id || null
 
-    const { data, error } = await supabase
+        const { data, error } = await supabase
       .from('boards')
-      .insert({ slug, text_content: '', user_id: userId })
+      .insert({ 
+        slug, 
+        text_content: '', 
+        user_id: userId,
+        expires_at: slug === 'public' ? null : undefined // Public board never expires
+      })
       .select()
       .single()
 

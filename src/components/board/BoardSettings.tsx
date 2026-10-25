@@ -195,7 +195,8 @@ export default function BoardSettings({
             )}
           </div>
 
-          {/* Expiry */}
+                   {/* Expiry (Hidden for Public Board) */}
+          {board.slug !== 'public' && (
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
               <Clock className="size-4 text-gray-500 dark:text-gray-400" />
@@ -222,7 +223,9 @@ export default function BoardSettings({
               Board will be permanently deleted after expiry
             </p>
           </div>
+          )}
         </div>
+        
 
         {/* Footer */}
         <div className="p-5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end gap-2">

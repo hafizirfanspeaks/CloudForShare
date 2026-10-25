@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { Toaster } from 'sonner'
 import App from './App'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
 import { useAuthStore } from '@/store/authStore'
 import { useThemeStore } from '@/store/themeStore'
 import { startAutoTheme } from '@/lib/themeAuto'
@@ -18,13 +19,11 @@ function Root() {
     initTheme()
     initAuth()
 
-    // Auto theme by time (dark at night)
     const cleanupAuto = startAutoTheme(
       () => useThemeStore.getState().theme,
       (t) => useThemeStore.getState().setTheme(t)
     )
 
-    // PWA service worker (production only)
     if ('serviceWorker' in navigator && import.meta.env.PROD) {
       window.addEventListener('load', () => {
         navigator.serviceWorker
@@ -40,7 +39,9 @@ function Root() {
     <StrictMode>
       <HelmetProvider>
         <BrowserRouter>
-          <App />
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
           <Toaster
             position="top-right"
             theme={theme}
