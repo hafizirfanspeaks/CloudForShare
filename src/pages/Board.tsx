@@ -14,6 +14,8 @@ import {
   Package,
   Printer,
   ImageDown,
+  Trash2,
+  Clipboard,
 } from 'lucide-react'
 import SEO from '@/components/seo/SEO'
 import Button from '@/components/common/Button'
@@ -73,6 +75,9 @@ export default function Board({ forceNew }: BoardProps = {}) {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<FileFilter>('all')
 
+  // Text area copy state
+  const [textCopied, setTextCopied] = useState(false)
+
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const textRef = useRef(text)
   const dragCounter = useRef(0)
@@ -114,7 +119,6 @@ export default function Board({ forceNew }: BoardProps = {}) {
       }
 
       if (!slug) {
-        // ✅ Get IP-based network slug for public board
         const networkSlug = await getNetworkSlug()
         
         const { board: mainBoard, error: mainError } =
@@ -217,6 +221,39 @@ export default function Board({ forceNew }: BoardProps = {}) {
     },
     [board]
   )
+
+  // --- Text Area Tools ---
+  const handleCopyText = async () => {
+    if (!text) return
+    try {
+      await navigator.clipboard.writeText(text)
+      setTextCopied(true)
+      notify.success('Text copied!')
+      setTimeout(() => setTextCopied(false), 2000)
+    } catch {
+      notify.error('Failed to copy text')
+    }
+  }
+
+  const handlePasteText = async () => {
+    try {
+      const clipboardText = await navigator.clipboard.readText()
+      if (clipboardText) {
+        const newText = text ? `${text}\n${clipboardText}` : clipboardText
+        handleTextChange(newText)
+        notify.success('Pasted from clipboard')
+      }
+    } catch {
+      notify.error('Permission denied', 'Please allow clipboard access')
+    }
+  }
+
+  const handleClearText = () => {
+    if (!text) return
+    handleTextChange('')
+    notify.success('Text cleared')
+  }
+  // -----------------------
 
   const handleFiles = useCallback(
     async (filesToUpload: File[]) => {
@@ -326,7 +363,9 @@ export default function Board({ forceNew }: BoardProps = {}) {
   }, [board, unlocked, handleFiles])
 
   const handleCopy = useCallback(async () => {
-    const url = board?.slug === 'public' ? `${window.location.origin}/` : `${window.location.origin}/b/${board?.slug}`
+    const url = board?.slug.startsWith('network-') || board?.slug === 'public' 
+      ? `${window.location.origin}/` 
+      : `${window.location.origin}/b/${board?.slug}`
     await navigator.clipboard.writeText(url)
     setCopied(true)
     notify.success('Link copied!', 'Share it with anyone')
@@ -522,12 +561,54 @@ export default function Board({ forceNew }: BoardProps = {}) {
             </div>
           </div>
 
-          <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 dark:focus-within:ring-brand-900/30 transition-all">
+          {/* ✅ White Board with Tools */}
+          <div className="relative rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 dark:focus-within:ring-brand-900/30 transition-all">
+            
+            {/* Floating Toolbar inside the board */}
+            <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-1 rounded-lg border border-gray-100 dark:border-gray-800">
+              <button
+                type="button"
+                onClick={handleCopyText}
+                disabled={!text}
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer",
+                  textCopied 
+                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                    : "bg-brand-50 text-brand-600 hover:bg-brand-100 dark:bg-brand-950/50 dark:text-brand-400 dark:hover:bg-brand-900/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                )}
+                title="Copy all text"
+              >
+                {textCopied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                <span className="hidden sm:inline">{textCopied ? 'Copied' : 'Copy'}</span>
+              </button>
+              
+              <button
+                type="button"
+                onClick={handlePasteText}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium bg-gray-50 text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-all cursor-pointer"
+                title="Paste from clipboard"
+              >
+                <Clipboard className="size-3.5" />
+                <span className="hidden sm:inline">Paste</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleClearText}
+                disabled={!text}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-900/50 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Clear all text"
+              >
+                <Trash2 className="size-3.5" />
+                <span className="hidden sm:inline">Clear</span>
+              </button>
+            </div>
+
             <textarea
               value={text}
               onChange={(e) => handleTextChange(e.target.value)}
               placeholder="Type or paste anything here... it saves automatically."
-              className="w-full min-h-50 p-4 md:p-6 text-base text-gray-900 dark:text-white bg-transparent resize-y focus:outline-none font-mono placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="w-full min-h-50 p-4 md:p-6 pt-14 text-base text-gray-900 dark:text-white bg-transparent resize-y focus:outline-none font-mono placeholder:text-gray-400 dark:placeholder:text-gray-500"
               spellCheck={false}
             />
           </div>
